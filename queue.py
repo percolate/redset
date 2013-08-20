@@ -29,8 +29,15 @@ class Queue(object):
         """
         Kwargs:
             redis_client (Redis.Redis instance): an instance of the redis
-            python client to use to communicate with a Redis server. The
-            default confiuration will be used if none is supplied.
+                python client to use to communicate with a Redis server. The
+                default confiuration will be used if none is supplied.
+            destructive_poll (bool): should we remove the values from the queue
+                when we call next_id?
+            eligibility_timestamp (UNIX timestamp): an absolute time when
+                values become eligible to be pulled off of the queue.
+            eligibility_offset (int): an offset in seconds to add to
+                time.time() which determines when an ID is eiligible to be
+                pulled off of the queue.
         """
         self.destructive_poll = destructive_poll
         self.eligibility_timestamp = eligibility_timestamp
@@ -91,13 +98,14 @@ class Queue(object):
         """
         Update the time that a given ID will be next checked in the queue.
 
+        Args:
+            queue_id (string or Number): the value that you want to be returned
+                when you call queue.next_id.
+
         Kwargs:
             check-time (timestamp int): the time to check next. defaults to now
                 if None is passed.
         """
-        if not isinstance(queue_id, Number):
-            raise ValueError("Queue ID must be a Number.")
-
         check_time = check_time or time.time()
         log.debug('Adding ID (%s) to queue %s with time: %s.' %
                  (queue_id, self.queue_key, check_time))
