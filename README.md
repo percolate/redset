@@ -1,55 +1,78 @@
-quedis
+redset
 =========
 
-`quedis`: A simple way to get use Redis sorted sets as task queues.
+`redset`: Simple, generic sorted sets backed by Redis that can be used to 
+coordinate distributed systems.
 
-quedis does not do anything except for queue IDs sorted by time. There is no worker daemon to run, or any client process to maintain. It is not designed to compete with projects like celery, instead this is for workflows where two properties are interesting:
+## Features
 
-- 1) The queue is a set where each unique ID can only be queued once.
-- 2) The queue is time-sensitive.
+- Safe for multiple producers and consumers
+- Seamless use with Python objects using serializers
+- No worker daemons to run, no client processes to maintain
+- Simple, easy-to-read implementation
+- Mimics Python's native set interface
+- Well tested
 
-The queues are sorted using a UNIX timstamp, where using the queue as an iterable returns a stream of values where the timestamp is greater than or equal to a value (by default it is time.time()). The Queue class contained within quedis is designed to be a small part of a larger system, where you will build something to both produce and consume IDs. Many distributed systems can use the techniques that we designed quedis to help us with.
+## About
 
-This software was developed at [Percolate](https://percolate.com), where we use it for all sorts of things where our RabbitMQ server doesn't fit the bill due to the 2 properties above being useful to us.
+This software was developed at [Percolate](https://percolate.com), where we use
+it for all sorts of things that involve maintaining synchronized sets of things
+across process boundaries. A common use-case is to use redset for coordinating 
+time-sensitive tasks where duplicate requests may be generated.
 
+Redset is unopinionated about how consumers look or behave. Want to have a
+plain 'ol Python consumer managed by supervisor? Fine. Want to be able to pop
+off items from within a celery job? Great. Redset has no say in where or how it
+is used: mechanism, not policy.
+
+## Simple example
+
+```python
+import json
+import redis
+
+from redset import TimeSortedSet
+
+
+class JsonSerializer(object):
+    load = json.loads
+    dump = json.dumps
+
+
+r = redis.Redis()
+ss = TimeSortedSet(r, 'important_json_biz', serializer=JsonSerializer())
+
+ss.add({'foo': 'bar1'})
+ss.add({'foo': 'bar2'})
+ss.add({'foo': 'bar3'})
+
+len(ss)
+# 3
+
+
+# ...some other process
+
+
+ss.peek()
+# {'foo': 'bar1'}
+
+ss.pop()
+# {'foo': 'bar1'}
+
+ss.take(2)
+# [{'foo': 'bar2'}, {'foo': 'bar3'}]
+```
+ 
 ## Installing
 
-download this directory, and install it using pip with setup.py:
+Download this directory, and install it using pip with setup.py:
 
 ```
 pip install .
 ```
 
-## Features
-
-- Easy Monitoring, by checking the age of the timestamps in the queue. If you
-  are interested in consuming a queue in real-time, you can monitor the delay
-  as fast as redis can respond to your query (FAST!!).
-- Easy customization: you can configure all the important behavior.
-
-## Related projects
+## Related projects (sort of)
 
 - [celery](https://github.com/celery/celery)
 - [RQ](http://python-rq.org/)
 
-## Example
-
-```python
->>> import quedis
-# assumes a Redis server running on 127.0.0.1:6379
->>> queue = quedis.Queue()
->>> queue.enqueue(123)
-
->>> for _id in queue:
->>>    print _id
-    123
-```
-
-You should implement some interesting features in your code to do something with the ID.
-
-```python
-# if we want to check the ID again
->>> queue.enqueue(123)
-# if we don't
->>> import this
-```
