@@ -1,7 +1,6 @@
 
 import time
 
-from redset.exceptions import EmptyException
 from redset.interfaces import Serializer
 from redset.locks import Lock
 
@@ -219,7 +218,7 @@ class SortedSet(object):
         results = self._get_next_item()
 
         if not results:
-            raise EmptyException("%s is empty" % self.name)
+            raise KeyError("%s is empty" % self.name)
 
         return results[0]
 
