@@ -4,8 +4,8 @@ from distutils.core import setup
 setup(
     name='redset',
     version='0.1',
-    author='jamesob, thekantian',
-    author_email='jamesob@percolate.com, zach@percolate.com',
+    author='thekantian, jamesob',
+    author_email='zach@percolate.com, jamesob@percolate.com',
     packages=['redset'],
     url='https://github.com/percolate/redset',
     license='see LICENSE',
