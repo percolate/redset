@@ -62,6 +62,28 @@ ss.pop()
 ss.take(2)
 # [{'foo': 'bar2'}, {'foo': 'bar3'}]
 ```
+
+## Usage concepts
+
+`redset.SortedSet` and its subclasses can be instantiated with a few paramters
+that are notable.
+
+### Specifying a serializer
+
+Since Redis only stores primitive numbers and strings, handling serialization
+and deserialization is a key part of making redset set usage simple in Python.
+
+A `serializer` instance can be passed (which adheres to the 
+`redset.interfaces.Serializer` interface, though it need not subclass it) to
+automatically handle packing and unpacking items managed with redset. 
+
+### Specifying a scorer
+
+A callable that specifies how to generate a score for items being added can
+also be passed to SortedSet's constructor as `scorer`. This callable takes
+one argument, which is the item *object* (i.e. the item before serialization)
+to be "scored."
+
  
 ## Installing
 
