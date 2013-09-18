@@ -7,7 +7,6 @@ import mockredis
 
 from redset import SortedSet, TimeSortedSet
 from redset.interfaces import Serializer
-from redset.exceptions import EmptyException
 
 
 class SortedSetTest(unittest.TestCase):
@@ -87,7 +86,7 @@ class SortedSetTest(unittest.TestCase):
         self.assertFalse(self.ss.discard(0))
 
     def test_peek(self):
-        with self.assertRaises(EmptyException):
+        with self.assertRaises(KeyError):
             self.ss.peek()
 
         self.ss.add(0)
@@ -287,7 +286,7 @@ class TimeSortedSetTest(unittest.TestCase):
         self.assertFalse(self.tss.discard(0))
 
     def test_peek(self):
-        with self.assertRaises(EmptyException):
+        with self.assertRaises(KeyError):
             self.tss.peek()
 
         self.tss.add(0)

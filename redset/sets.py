@@ -121,7 +121,7 @@ class SortedSet(object):
         and the object is deleted from redis.
 
         Raises:
-            EmptyException
+            KeyError -- if no items left
 
         Returns:
             object.
@@ -144,7 +144,9 @@ class SortedSet(object):
 
         """
         with self.lock:
-            return [self._pop_item() for __ in range(min(num, len(self)))]
+            items = [self._pop_item() for __ in range(min(num, len(self)))]
+
+        return items
 
     def clear(self):
         """
@@ -179,7 +181,7 @@ class SortedSet(object):
         Return the next item eligible for processing without removing it.
 
         Raises:
-            EmptyException
+            KeyError -- if no items left
 
         Returns:
             str.
@@ -220,6 +222,8 @@ class SortedSet(object):
         if not results:
             raise KeyError("%s is empty" % self.name)
 
+        with open('foo.txt', 'a') as f:
+            f.write(str(results) + '\n')
         return results[0]
 
     def _pop_item(self):
