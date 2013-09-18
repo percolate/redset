@@ -28,6 +28,11 @@ def _is_redis_available():
 
 @unittest.skipIf(not _is_redis_available(), "Redis process isn't available")
 class MultiprocessTest(unittest.TestCase):
+    """
+    Ensure that we can bang on the sorted set from multiple processes without
+    trouble.
+
+    """
 
     def setUp(self):
         self.r = redis.Redis()
@@ -48,6 +53,12 @@ class MultiprocessTest(unittest.TestCase):
         self.ss.clear()
 
     def test_multiprocessing(self):
+        """
+        Add a bunch of items to a sorted set; attempt to take simulataneously
+        from multiple processes. Ensure that we end up taking all elements
+        added without duplication.
+
+        """
         num_procs = 10
         num_items = num_procs * 100
 
