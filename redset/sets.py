@@ -137,7 +137,8 @@ class SortedSet(object):
         Atomically remove and return the next `num` items for processing in the
         set.
 
-        Will return `min(num, len(self))` items.
+        Will return at most `min(num, len(self))` items. If certain items fail
+        to deserialize, the falsey value returned will be filtered out.
 
         Returns:
             list of objects.
@@ -146,7 +147,7 @@ class SortedSet(object):
         with self.lock:
             items = [self._pop_item() for __ in range(min(num, len(self)))]
 
-        return items
+        return filter(lambda i: i != None, items)
 
     def clear(self):
         """

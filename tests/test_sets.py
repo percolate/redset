@@ -173,7 +173,6 @@ class SerializerTest(unittest.TestCase):
         self.assertEquals(
             self.ss.take(3),
             [{'yo': 'foo'},
-             None,
              {'yo': 'hey'}],
         )
 
