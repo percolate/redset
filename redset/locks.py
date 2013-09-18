@@ -44,6 +44,7 @@ class Lock(object):
 
     def __enter__(self):
         timeout = self.timeout
+        poll_interval = 0.2
 
         while timeout >= 0:
             expires = time.time() + self.expires + 1
@@ -63,8 +64,8 @@ class Lock(object):
             if has_expired:
                 return
 
-            timeout -= 1
-            time.sleep(1)
+            timeout -= poll_interval
+            time.sleep(poll_interval)
 
         raise LockTimeout("Timeout while waiting for lock '%s'" % self.key)
 
