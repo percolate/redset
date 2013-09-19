@@ -2,8 +2,7 @@
 import unittest
 import time
 import json
-
-import mockredis
+import redis
 
 from redset import SortedSet, TimeSortedSet
 from redset.interfaces import Serializer
@@ -13,9 +12,7 @@ class SortedSetTest(unittest.TestCase):
 
     def setUp(self):
         self.key = 'ss_test'
-        r = mockredis.mock_redis_client()
-
-        self.ss = SortedSet(r, self.key)
+        self.ss = SortedSet(redis.Redis(), self.key)
 
     def tearDown(self):
         self.ss.clear()
@@ -63,8 +60,8 @@ class SortedSetTest(unittest.TestCase):
         )
 
         self.assertEquals(
-            self.ss.score(0),
-            dup_added_at,
+            int(self.ss.score(0)),
+            int(dup_added_at),
         )
 
     def test_clear(self):
@@ -135,9 +132,11 @@ class SerializerTest(unittest.TestCase):
 
     def setUp(self):
         self.key = 'json_ss_test'
-        r = mockredis.mock_redis_client()
-
-        self.ss = SortedSet(r, self.key, serializer=self.FakeJsonSerializer())
+        self.ss = SortedSet(
+            redis.Redis(),
+            self.key,
+            serializer=self.FakeJsonSerializer(),
+        )
 
     def tearDown(self):
         self.ss.clear()
@@ -181,14 +180,13 @@ class ScorerTest(unittest.TestCase):
 
     def setUp(self):
         self.key = 'scorer_ss_test'
-        r = mockredis.mock_redis_client()
 
         class Ser(Serializer):
             load = int
             dump = str
 
         self.ss = SortedSet(
-            r,
+            redis.Redis(),
             self.key,
             scorer=lambda i: i * -1,
             serializer=Ser(),
@@ -212,9 +210,8 @@ class TimeSortedSetTest(unittest.TestCase):
     def setUp(self):
         self.key = 'tss_test'
         self.now = time.time()
-        r = mockredis.mock_redis_client()
 
-        self.tss = TimeSortedSet(r, self.key)
+        self.tss = TimeSortedSet(redis.Redis(), self.key)
 
     def tearDown(self):
         self.tss.clear()
@@ -262,8 +259,8 @@ class TimeSortedSetTest(unittest.TestCase):
         )
 
         self.assertEquals(
-            self.tss.score(0),
-            dup_added_at,
+            int(self.tss.score(0)),
+            int(dup_added_at),
         )
 
     def test_clear(self):
@@ -305,8 +302,8 @@ class TimeSortedSetTest(unittest.TestCase):
         self.tss.add(0, self.now)
 
         self.assertEquals(
-            self.now,
-            self.tss.score(0),
+            int(self.now),
+            int(self.tss.score(0)),
         )
 
     def test_oldest_time(self):
@@ -319,15 +316,15 @@ class TimeSortedSetTest(unittest.TestCase):
             self.tss.add(i, self.now - i)
 
         self.assertEquals(
-            self.now - 2,
-            self.tss.peek_score(),
+            int(self.now - 2),
+            int(self.tss.peek_score()),
         )
 
         self.tss.pop()
 
         self.assertEquals(
-            self.now - 1,
-            self.tss.peek_score(),
+            int(self.now - 1),
+            int(self.tss.peek_score()),
         )
 
 
