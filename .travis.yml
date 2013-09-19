@@ -7,7 +7,7 @@ services:
   - redis-server
 # command to install dependencies
 install: 
-  - "pip install mockredis redis-py"
+  - "pip install mockredis redis"
   - "pip install . --use-mirrors"
 # command to run tests
 script: nosetests
