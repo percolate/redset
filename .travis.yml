@@ -2,9 +2,12 @@ language: python
 python:
   - "2.6"
   - "2.7"
+# requires redis-server for multiprocess tests
+services:
+  - redis-server
 # command to install dependencies
 install: 
-  - "pip install mockredis
+  - "pip install mockredis redis-py"
   - "pip install . --use-mirrors"
 # command to run tests
 script: nosetests
