@@ -7,8 +7,8 @@ services:
   - redis-server
 # command to install dependencies
 install: 
-  - "pip install mockredispy==2.7.5.1 redis"
-  - "pip install . --use-mirrors"
+  - "pip install mockredispy==2.7.5.1 redis==2.4.11"
+  - "pip install ."
 # command to run tests
 script: nosetests
 
