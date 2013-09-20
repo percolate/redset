@@ -18,7 +18,7 @@ class SortedSet(object):
     """
     A Redis-backed sorted set safe for multiprocess consumption.
 
-    By default, items are stored and returned as `str`s. Scores default to 0.
+    By default, items are stored and returned as str. Scores default to 0.
 
     A serializer can be specified to ease packing/unpacking of items.
     Otherwise, items are cast to and returned as strings.
@@ -31,18 +31,21 @@ class SortedSet(object):
                  serializer=None,
                  ):
         """
-        Args:
-            redis_client (Redis.Redis instance): an instance of the redis
-                python client to use to communicate with a Redis server.
-            name (str): used to identify the storage location for this set.
-
-        Kwargs:
-            scorer (Callable, arity 1): takes in a single argument, which is
-                the item to be stored, and returns a score which will be used
-                for the item.
-            serializer (Serializer instance): must match the interface defined
-                by `redset.interfaces.Serializer`. Defines how objects are
-                marshalled into redis.
+        :param redis_client: an instance of the
+            redis python client to use to communicate with a Redis server.
+        :type redis_client: redis.Redis instance
+        :param name: used to identify the storage location for this
+            set.
+        :type name: str
+        :param scorer: takes in a single argument, which is
+            the item to be stored, and returns a score which will be used
+            for the item.
+        :type scorer: Callable, arity 1
+        :param serializer: must match the interface defined
+            by `redset.interfaces.Serializer`.
+            Defines how objects are marshalled into redis.
+        :type serializer: :class:`interfaces.Serializer
+            <interfaces.Serializer>`
 
         """
         if not isinstance(name, (str, unicode)):
@@ -66,8 +69,7 @@ class SortedSet(object):
         """
         How many values are the in the set?
 
-        Returns:
-            int.
+        :returns: int
 
         """
         return int(self.redis.zcard(self.name))
@@ -81,8 +83,7 @@ class SortedSet(object):
         The name of this set and the string that identifies the redis key
         where this set is stored.
 
-        Returns:
-            str.
+        :returns: str
 
         """
         return self._name
@@ -92,15 +93,13 @@ class SortedSet(object):
         Add the item to the set. It the item is already in the set, update
         its score.
 
-        Args:
-            item (str)
+        :param item:
+        :type item: str
+        :param score: optionally specify the score for the item
+            to be added.
+        :type score: Number
 
-        Kwargs:
-            score (float): optionally specify the score for the item
-                to be added.
-
-        Returns:
-            float. score the item was added with
+        :returns: Number -- score the item was added with
 
         """
         score = score or self.scorer(item)
@@ -120,11 +119,9 @@ class SortedSet(object):
         If, for some reason, deserializing the object fails, None is returned
         and the object is deleted from redis.
 
-        Raises:
-            KeyError -- if no items left
+        :raises: KeyError -- if no items left
 
-        Returns:
-            object.
+        :returns: object.
 
         """
         with self.lock:
@@ -134,14 +131,13 @@ class SortedSet(object):
 
     def take(self, num):
         """
-        Atomically remove and return the next `num` items for processing in the
-        set.
+        Atomically remove and return the next ``num`` items for processing in
+        the set.
 
-        Will return at most `min(num, len(self))` items. If certain items fail
-        to deserialize, the falsey value returned will be filtered out.
+        Will return at most ``min(num, len(self))`` items. If certain items
+        fail to deserialize, the falsey value returned will be filtered out.
 
-        Returns:
-            list of objects.
+        :returns: list of objects
 
         """
         with self.lock:
@@ -153,8 +149,7 @@ class SortedSet(object):
         """
         Empty the set of all scores and ID strings.
 
-        Returns:
-            bool.
+        :returns: bool
 
         """
         log.debug('Flushing set %s' % self.name)
@@ -168,11 +163,9 @@ class SortedSet(object):
         """
         Remove a given item from the set.
 
-        Args:
-            item (object)
-
-        Returns:
-            bool. success of removal
+        :param item:
+        :type item: object
+        :returns: bool -- success of removal
 
         """
         return self._discard_by_str(self._dump_item(item))
@@ -181,11 +174,8 @@ class SortedSet(object):
         """
         Return the next item eligible for processing without removing it.
 
-        Raises:
-            KeyError -- if no items left
-
-        Returns:
-            str.
+        :raises: KeyError -- if no items left
+        :returns: object
 
         """
         return self._load_item(self._peek_str())
@@ -194,8 +184,7 @@ class SortedSet(object):
         """
         See what the score for an item is.
 
-        Returns:
-            Number or None.
+        :returns: Number or None.
 
         """
         return self.redis.zscore(self.name, self._dump_item(item))
@@ -205,8 +194,7 @@ class SortedSet(object):
         What is the score of the next item to be processed? This is interesting
         if you are trying to keep your set at real-time consumption.
 
-        Returns:
-            type(serializer.load).
+        :returns: Number
 
         """
         res = self._get_next_item(with_score=True)
@@ -254,8 +242,7 @@ class SortedSet(object):
 
     def _get_next_item(self, with_score=False):
         """
-        Returns:
-            [str] or [str, float]. item optionally with score
+        :returns: [str] or [str, float]. item optionally with score
 
         """
         return self.redis.zrangebyscore(
