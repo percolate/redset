@@ -16,6 +16,10 @@ coordinate distributed systems.
 - Mimics Python's native set interface
 - Well tested
 
+## Docs
+
+[Here](http://redset.readthedocs.org/en/latest/)
+
 ## About
 
 This software was developed at [Percolate](https://percolate.com), where we use
