@@ -143,7 +143,7 @@ class SortedSet(object):
         with self.lock:
             items = [self._pop_item() for __ in range(min(num, len(self)))]
 
-        return filter(lambda i: i != None, items)
+        return filter(lambda i: i is not None, items)
 
     def clear(self):
         """
@@ -211,8 +211,6 @@ class SortedSet(object):
         if not results:
             raise KeyError("%s is empty" % self.name)
 
-        with open('foo.txt', 'a') as f:
-            f.write(str(results) + '\n')
         return results[0]
 
     def _pop_item(self):
@@ -310,4 +308,3 @@ class _DefaultSerializer(Serializer):
 
 
 _default_scorer = lambda i: 0
-
