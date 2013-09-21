@@ -211,8 +211,6 @@ class SortedSet(object):
         if not results:
             raise KeyError("%s is empty" % self.name)
 
-        with open('foo.txt', 'a') as f:
-            f.write(str(results) + '\n')
         return results[0]
 
     def _pop_item(self):
