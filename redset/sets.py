@@ -143,7 +143,7 @@ class SortedSet(object):
         with self.lock:
             items = [self._pop_item() for __ in range(min(num, len(self)))]
 
-        return filter(lambda i: i != None, items)
+        return filter(lambda i: i is not None, items)
 
     def clear(self):
         """
@@ -310,4 +310,3 @@ class _DefaultSerializer(Serializer):
 
 
 _default_scorer = lambda i: 0
-
