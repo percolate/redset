@@ -40,14 +40,8 @@ import redis
 
 from redset import TimeSortedSet
 
-
-class JsonSerializer(object):
-    load = json.loads
-    dump = json.dumps
-
-
 r = redis.Redis()
-ss = TimeSortedSet(r, 'important_json_biz', serializer=JsonSerializer())
+ss = TimeSortedSet(r, 'important_json_biz', serializer=json)
 
 ss.add({'foo': 'bar1'})
 ss.add({'foo': 'bar2'})
