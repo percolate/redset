@@ -12,7 +12,7 @@ class Serializer(object):
     __metaclass__ = abc.ABCMeta
 
     @abc.abstractmethod
-    def load(self, str_from_redis):
+    def loads(self, str_from_redis):
         """
         Deserialize a str item from redis into a Python object.
 
@@ -23,7 +23,7 @@ class Serializer(object):
         """
 
     @abc.abstractmethod
-    def dump(self, obj):
+    def dumps(self, obj):
         """
         Serialize a Python object into a `str`
 

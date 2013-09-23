@@ -42,8 +42,8 @@ class MultiprocessTest(unittest.TestCase):
 
     def _make_ss(self):
         class Serializer(object):
-            load = int
-            dump = str
+            loads = int
+            dumps = str
 
         return SortedSet(
             redis.Redis(), self.set_name, serializer=Serializer(),

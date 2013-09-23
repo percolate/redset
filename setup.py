@@ -3,7 +3,7 @@ from distutils.core import setup
 
 setup(
     name='redset',
-    version='0.2.0',
+    version='0.2.1',
     author='thekantian, jamesob',
     author_email='zach@percolate.com, jamesob@percolate.com',
     packages=['redset'],

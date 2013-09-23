@@ -1,5 +1,9 @@
 # History
 
+## 0.2.1
+
+- Change serializer interface to match `json` (dump, load `->` dumps, loads)
+
 ## 0.2.0
 
 - Spiked documentation with sphinx.

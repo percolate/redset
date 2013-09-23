@@ -260,11 +260,11 @@ class SortedSet(object):
 
         """
         try:
-            self.serializer.load
+            self.serializer.loads
         except AttributeError:
             return item
 
-        return self.serializer.load(item)
+        return self.serializer.loads(item)
 
     def _dump_item(self, item):
         """
@@ -272,11 +272,11 @@ class SortedSet(object):
 
         """
         try:
-            self.serializer.dump
+            self.serializer.dumps
         except AttributeError:
             return item
 
-        return self.serializer.dump(item)
+        return self.serializer.dumps(item)
 
 
 class TimeSortedSet(SortedSet):
@@ -302,11 +302,8 @@ class TimeSortedSet(SortedSet):
 
 class _DefaultSerializer(Serializer):
 
-    def load(self, str_from_redis):
-        return str_from_redis
-
-    def dump(self, obj):
-        return obj
+    loads = str
+    dumps = lambda self, i: i
 
 
 _default_scorer = lambda i: 0

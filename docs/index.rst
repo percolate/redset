@@ -27,25 +27,22 @@ Quick example
 -------------
 
 ::
+    
+    >>> import json
         
-    class JsonSerializer(object):
-        load = json.loads
-        dump = json.dumps
+    >>> ss = TimeSortedSet(redis.Redis(), 'json_biz', serializer=json)
 
+    >>> ss.add({'foo': 'bar1'}, score=123)
+    123
 
-    r = redis.Redis()
-    ss = TimeSortedSet(r, 'important_json_biz', serializer=JsonSerializer())
+    >>> {'foo': 'bar1'} in ss
+    True
 
-    ss.add({'foo': 'bar1'}, score=123)
+    >>> ss.score({'foo': 'bar1'})
+    123
 
-    {'foo': 'bar1'} in ss
-    # True
-
-    ss.score({'foo': 'bar1'})
-    # 123
-
-    ss.pop()
-    # {'foo': 'bar1'}
+    >>> ss.pop()
+    {'foo': 'bar1'}
 
 
 Redset is designed to be simple and pleasant to use. It was

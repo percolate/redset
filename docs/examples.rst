@@ -20,11 +20,11 @@ multi-consumer prioritized task system.
 
     class TaskSerializer(redset.interfaces.Serializer):
         
-        def load(self, incoming_str):
+        def loads(self, incoming_str):
             d = json.loads(incoming_str) 
             return Task(d['foo'], d['bar'], d['priority'])
 
-        def dump(self, task):
+        def dumps(self, task):
             return json.dumps(task._asdict)
 
     task_set = redset.SortedSet(

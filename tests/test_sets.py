@@ -121,11 +121,10 @@ class SerializerTest(unittest.TestCase):
         Handles JSON serialization.
 
         """
-        def dump(self, item):
+        def dumps(self, item):
             return json.dumps(item)
 
-        def load(self, item):
-            print item
+        def loads(self, item):
             if 'uhoh' in item:
                 raise Exception("omg unserializing failed!")
             return json.loads(item)
@@ -182,8 +181,8 @@ class ScorerTest(unittest.TestCase):
         self.key = 'scorer_ss_test'
 
         class Ser(Serializer):
-            load = int
-            dump = str
+            loads = int
+            dumps = str
 
         self.ss = SortedSet(
             redis.Redis(),
