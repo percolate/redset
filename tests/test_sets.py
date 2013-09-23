@@ -31,7 +31,7 @@ class SortedSetTest(unittest.TestCase):
             self.ss.add(i)
 
         self.assertTrue(
-           0 in self.ss
+            0 in self.ss
         )
 
         self.assertFalse(
@@ -229,7 +229,7 @@ class TimeSortedSetTest(unittest.TestCase):
             self.tss.add(i)
 
         self.assertTrue(
-           0 in self.tss
+            0 in self.tss
         )
 
         self.assertFalse(
@@ -325,5 +325,3 @@ class TimeSortedSetTest(unittest.TestCase):
             int(self.now - 1),
             int(self.tss.peek_score()),
         )
-
-

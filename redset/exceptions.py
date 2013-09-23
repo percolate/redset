@@ -6,4 +6,3 @@ class LockTimeout(Exception):
 
     """
     pass
-

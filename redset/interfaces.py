@@ -31,5 +31,3 @@ class Serializer(object):
         :returns: str
 
         """
-
-
