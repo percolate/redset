@@ -1,5 +1,9 @@
 # History
 
+## 0.2.2
+
+- Use `setuptools` now that distribute has been merged back into it
+
 ## 0.2.1
 
 - Change serializer interface to match `json` (dump, load `->` dumps, loads)

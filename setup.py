@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='redset',
-    version='0.2.1',
+    version='0.2.2',
     author='thekantian, jamesob',
     author_email='zach@percolate.com, jamesob@percolate.com',
     packages=['redset'],
