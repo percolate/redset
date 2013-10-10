@@ -1,5 +1,9 @@
 # History
 
+## 0.2.3
+
+- Documentation updates
+
 ## 0.2.2
 
 - Use `setuptools` now that distribute has been merged back into it

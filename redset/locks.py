@@ -71,3 +71,4 @@ class Lock(object):
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.redis.delete(self.key)
+
