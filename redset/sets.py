@@ -29,10 +29,12 @@ class SortedSet(object):
                  name,
                  scorer=None,
                  serializer=None,
+                 lock_timeout=None,
+                 lock_expires=None,
                  ):
         """
-        :param redis_client: an instance of the
-            redis python client to use to communicate with a Redis server.
+        :param redis_client: an object matching the interface of the
+            redis.Redis client. Used to communicate with a Redis server.
         :type redis_client: redis.Redis instance
         :param name: used to identify the storage location for this
             set.
@@ -46,16 +48,23 @@ class SortedSet(object):
             Defines how objects are marshalled into redis.
         :type serializer: :class:`interfaces.Serializer
             <interfaces.Serializer>`
+        :param lock_timeout: maximum time we should wait on a lock in seconds.
+            Defaults to value set in :class:`locks.Lock <locks.Lock>`
+        :type lock_timeout: Number
+        :param lock_expires: maximum time we should hold the lock in seconds
+            Defaults to value set in :class:`locks.Lock <locks.Lock>`
+        :type lock_expires: Number
 
         """
-        if not isinstance(name, (str, unicode)):
-            raise ValueError("name must be a str")
-
         self._name = name
         self.redis = redis_client
         self.scorer = scorer or _default_scorer
         self.serializer = serializer or _DefaultSerializer()
-        self.lock = Lock(self.redis, '%s__lock' % self.name)
+        self.lock = Lock(
+            self.redis,
+            '%s__lock' % self.name,
+            expires=lock_expires,
+            timeout=lock_timeout)
 
     def __repr__(self):
         return (
@@ -305,3 +314,4 @@ class _DefaultSerializer(Serializer):
 
 
 _default_scorer = lambda i: 0
+

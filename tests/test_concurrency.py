@@ -8,25 +8,13 @@ import multiprocessing
 import itertools
 
 import redis
-from redis.connection import ConnectionError
 
 from redset import SortedSet
+from redset.exceptions import LockTimeout
 
 client = redis.Redis()
 
 
-def _is_redis_available():
-    try:
-        client.set('foo', 1)
-    except ConnectionError:
-        return False
-    else:
-        client.delete('foo')
-
-    return True
-
-
-@unittest.skipIf(not _is_redis_available(), "Redis process isn't available")
 class MultiprocessTest(unittest.TestCase):
     """
     Ensure that we can bang on the sorted set from multiple processes without
@@ -38,7 +26,6 @@ class MultiprocessTest(unittest.TestCase):
         self.r = redis.Redis()
         self.set_name = 'MultiprocessTest'
         self.ss = self._make_ss()
-        self.ss.clear()
 
     def _make_ss(self):
         class Serializer(object):
@@ -99,3 +86,52 @@ class MultiprocessTest(unittest.TestCase):
             0,
             len(self.ss),
         )
+
+
+class LockExpiryTest(unittest.TestCase):
+    """
+    Ensure that we can bang on the sorted set from multiple processes without
+    trouble.
+
+    """
+
+    def setUp(self):
+        self.r = redis.Redis()
+        self.set_name = self.__class__.__name__
+        self.timeout_length = 0.001
+        self.holder = SortedSet(redis.Redis(), self.set_name, lock_expires=10)
+        self.chump = SortedSet(
+            redis.Redis(),
+            self.set_name,
+            lock_timeout=self.timeout_length,
+            lock_expires=self.timeout_length,
+        )
+
+    def tearDown(self):
+        self.holder.clear()
+        self.chump.clear()
+
+    def test_lock_timeout(self):
+        """
+        One process holds the lock while the other times out.
+
+        """
+        with self.holder.lock:
+            with self.assertRaises(LockTimeout):
+                with self.chump.lock:
+                    assert False, "shouldn't be able to acquire the lock"
+
+    def test_lock_expires(self):
+        """
+        One process holds the lock, times out, and the other scoopes the lock.
+
+        """
+        got_the_lock = False
+
+        # chump's acquisition should timeout, get picked up by holder
+        with self.chump.lock:
+            with self.holder.lock:
+                got_the_lock = True
+
+        assert got_the_lock, "`holder` should have acquired the lock"
+

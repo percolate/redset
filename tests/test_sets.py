@@ -137,8 +137,16 @@ class SerializerTest(unittest.TestCase):
             serializer=self.FakeJsonSerializer(),
         )
 
+        # has a bad serializer
+        self.ss2 = SortedSet(
+            redis.Redis(),
+            self.key + '2',
+            serializer=object(),
+        )
+
     def tearDown(self):
         self.ss.clear()
+        self.ss2.clear()
 
     def test_add_and_pop(self):
         self.ss.add({'yo': 'json'}, score=1)
@@ -172,6 +180,18 @@ class SerializerTest(unittest.TestCase):
             self.ss.take(3),
             [{'yo': 'foo'},
              {'yo': 'hey'}],
+        )
+
+    def test_bad_serializer(self):
+        self.ss2.add(1, score=0)
+        self.ss2.add(2, score=1)
+
+        assert '2' in self.ss2
+
+        # gets deserialied as a str, not an int
+        self.assertEquals(
+            '1',
+            self.ss2.pop(),
         )
 
 
