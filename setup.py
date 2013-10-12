@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup
 
+import redset
+
 setup(
     name='redset',
-    version='0.2.3',
+    version=redset.__version__,
     author='thekantian, jamesob',
     author_email='zach@percolate.com, jamesob@percolate.com',
     packages=['redset'],
@@ -11,6 +13,7 @@ setup(
     license='see LICENSE',
     description='Simple, distributed sorted sets with redis',
     long_description=open('README.rst').read(),
+    tests_require=['redis'],
     classifiers=[
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',

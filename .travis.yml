@@ -6,8 +6,12 @@ services:
   - redis-server
 # command to install dependencies
 install: 
-  - "pip install redis"
+  - "pip install redis coverage nose-cov"
   - "pip install ."
 # command to run tests
-script: nosetests
+script: 
+  - nosetests
+# push coverage info to coveralls.io
+after_success:
+  - coveralls
 

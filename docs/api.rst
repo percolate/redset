@@ -49,7 +49,7 @@ The only builtin concrete subclass of :class:`SortedSet <SortedSet>` is
    :members:
 
    .. automethod:: __init__
-
+   
 
 Interfaces
 ----------
@@ -59,4 +59,24 @@ It need not be subclassed for concrete serializers.
 
 .. autoclass:: redset.interfaces.Serializer
    :members:
+  
 
+.. module:: redset.serializers
+
+
+Builtin serializers
+-------------------
+
+One serializer is included for convenience, and that's 
+:class:`redset.serializers.NamedtupleSerializer`, which allows seamless use of 
+namedtuples.
+
+.. autoclass:: redset.serializers.NamedtupleSerializer
+   :members:
+    
+   .. automethod:: __init__
+   .. automethod:: dumps
+   .. automethod:: loads
+    
+
+   

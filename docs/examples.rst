@@ -15,23 +15,15 @@ multi-consumer prioritized task system.
     import json
     from collections import namedtuple
     import redset, redis
+    from redset.serializers import NamedtupleSerializer
 
     Task = namedtuple('Task', 'foo,bar,priority')
-
-    class TaskSerializer(redset.interfaces.Serializer):
-        
-        def loads(self, incoming_str):
-            d = json.loads(incoming_str) 
-            return Task(d['foo'], d['bar'], d['priority'])
-
-        def dumps(self, task):
-            return json.dumps(task._asdict)
 
     task_set = redset.SortedSet(
         redis.Redis(),
         'tasks',
         scorer=lambda task: task.priority,
-        serializer=TaskSerializer(),
+        serializer=NamedtupleSerializer(Task),
     )
 
 Now we can produce from anywhere:
@@ -48,6 +40,6 @@ And maybe have a daemon that consumes:
     def process_tasks():
         while True:
             for task in task_set.take(10):
-                do_something(task)
+                do_work_on_task(task)
             sleep(1)
 

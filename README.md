@@ -14,24 +14,8 @@ coordinate distributed systems.
 - No worker daemons to run, no client processes to maintain
 - Simple, easy-to-read implementation
 - Mimics Python's native set interface
-- Well tested
-
-## Docs
-
-[Here](http://redset.readthedocs.org/en/latest/)
-
-## About
-
-This software was developed at [Percolate](https://percolate.com), where we use
-it for all sorts of things that involve maintaining synchronized sets of things
-across process boundaries. A common use-case is to use redset for coordinating 
-time-sensitive tasks where duplicate requests may be generated.
-
-Redset is unopinionated about how consumers look or behave. Want to have a
-plain 'ol Python consumer managed by supervisor? Fine. Want to be able to pop
-off items from within a celery job? Great. Redset has no say in where or how it
-is used: mechanism, not policy.
-
+- 99% test coverage
+ 
 ## Simple example
 
 ```python
@@ -63,6 +47,22 @@ ss.pop()
 ss.take(2)
 # [{'foo': 'bar2'}, {'foo': 'bar3'}]
 ```
+ 
+## Docs
+
+[Here](http://redset.readthedocs.org/en/latest/)
+
+## About
+
+This software was developed at [Percolate](https://percolate.com), where we use
+it for all sorts of things that involve maintaining synchronized sets of things
+across process boundaries. A common use-case is to use redset for coordinating 
+time-sensitive tasks where duplicate requests may be generated.
+
+Redset is unopinionated about how consumers look or behave. Want to have a
+plain 'ol Python consumer managed by supervisor? Fine. Want to be able to pop
+off items from within a celery job? Great. Redset has no say in where or how it
+is used: mechanism, not policy.
 
 ## Usage concepts
 
