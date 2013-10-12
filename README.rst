@@ -1,7 +1,7 @@
 redset
 ======
 
-|PyPI version| |build status|
+|PyPI version| |build status| |Coverage Status|
 
 Simple, generic sorted sets backed by Redis that can be used to
 coordinate distributed systems.
@@ -113,3 +113,5 @@ Related projects (sort of)
    :target: http://badge.fury.io/py/redset
 .. |build status| image:: https://travis-ci.org/percolate/redset.png?branch=master
    :target: https://travis-ci.org/percolate/redset
+.. |Coverage Status| image:: https://coveralls.io/repos/percolate/redset/badge.png?branch=master
+   :target: https://coveralls.io/r/percolate/redset?branch=master
