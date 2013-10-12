@@ -1,5 +1,12 @@
 # History
 
+## 0.3
+
+- Add builtin serializer `NamedtupleSerializer`
+- Improve lock re: redis' spotty timestamp precision
+- Increase test coverage
+- Add coveralls to travis-CI
+
 ## 0.2.3
 
 - Documentation updates

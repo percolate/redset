@@ -3,6 +3,7 @@ redset
 
 [![PyPI version](https://badge.fury.io/py/redset.png)](http://badge.fury.io/py/redset)
 [![build status](https://travis-ci.org/percolate/redset.png?branch=master)](https://travis-ci.org/percolate/redset)
+[![Coverage Status](https://coveralls.io/repos/percolate/redset/badge.png?branch=master)](https://coveralls.io/r/percolate/redset?branch=master)
 
 Simple, generic sorted sets backed by Redis that can be used to 
 coordinate distributed systems.
