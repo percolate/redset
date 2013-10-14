@@ -86,17 +86,10 @@ also be passed to SortedSet's constructor as `scorer`. This callable takes
 one argument, which is the item *object* (i.e. the item before serialization)
 to be "scored."
 
- 
-## Installing
 
-Download this directory, and install it using pip with setup.py:
+## Related projects
 
-```
-pip install .
-```
-
-## Related projects (sort of)
-
+- [redis-py](https://github.com/andymccurdy/redis-py)
 - [celery](https://github.com/celery/celery)
 - [RQ](http://python-rq.org/)
 
