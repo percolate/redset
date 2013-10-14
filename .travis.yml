@@ -6,7 +6,7 @@ services:
   - redis-server
 # command to install dependencies
 install: 
-  - "pip install redis coverage nose-cov"
+  - "pip install redis coveralls coverage nose-cov --use-mirrors"
   - "pip install ."
 # command to run tests
 script: 
