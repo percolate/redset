@@ -149,10 +149,10 @@ class SortedSet(object):
         :returns: list of objects
 
         """
-        with self.lock:
-            items = [self._pop_item() for __ in range(min(num, len(self)))]
+        if num < 1:
+            return []
 
-        return filter(lambda i: i is not None, items)
+        return self._pop_items(num)
 
     def clear(self):
         """
@@ -162,11 +162,7 @@ class SortedSet(object):
 
         """
         log.debug('Flushing set %s' % self.name)
-
-        with self.lock:
-            result = self.redis.delete(self.name)
-
-        return result
+        return self.redis.delete(self.name)
 
     def discard(self, item):
         """
@@ -227,15 +223,39 @@ class SortedSet(object):
         Internal method for returning the next item without locking.
 
         """
-        res = None
-        item_str = self._peek_str()
+        res_list = self._pop_items(1)
+        return res_list[0] if res_list else None
 
-        try:
-            res = self._load_item(item_str)
-        except Exception:
-            log.exception("Could not deserialize '%s'" % res)
-        finally:
-            self._discard_by_str(item_str)
+    def _pop_items(self, num_items):
+        """
+        Internal method for poping items atomically from redis.
+
+        :returns: [loaded_item, ...]. if we can't deserialize a particular
+            item, just skip it.
+
+        """
+        res = []
+        pipe = self.redis.pipeline()
+
+        (pipe
+         .zrange(
+             self.name,
+             0,
+             num_items - 1,
+             withscores=False)
+         .zremrangebyrank(
+             self.name,
+             0,
+             num_items - 1)
+         )
+
+        item_strs = pipe.execute()[0]
+
+        for item_str in item_strs:
+            try:
+                res.append(self._load_item(item_str))
+            except Exception:
+                log.exception("Could not deserialize '%s'" % res)
 
         return res
 
@@ -252,12 +272,10 @@ class SortedSet(object):
         :returns: [str] or [str, float]. item optionally with score
 
         """
-        return self.redis.zrangebyscore(
+        return self.redis.zrange(
             self.name,
-            '-inf',
-            '+inf',
-            start=0,
-            num=1,
+            0,
+            0,
             withscores=with_score,
         )
 

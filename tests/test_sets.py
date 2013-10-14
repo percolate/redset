@@ -113,6 +113,16 @@ class SortedSetTest(unittest.TestCase):
             0,
         )
 
+        self.assertEquals(
+            self.ss.take(0),
+            [],
+        )
+
+        self.assertEquals(
+            self.ss.take(-1),
+            [],
+        )
+
 
 class SerializerTest(unittest.TestCase):
 

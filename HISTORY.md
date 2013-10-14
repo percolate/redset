@@ -1,5 +1,10 @@
 # History
 
+## 0.3.1
+
+- Use `redis.Redis.pipeline` for doing atomic set operations, batching multiple
+  pops.
+
 ## 0.3
 
 - Add builtin serializer `NamedtupleSerializer`
