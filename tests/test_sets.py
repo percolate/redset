@@ -360,8 +360,8 @@ class TimeSortedSetTest(unittest.TestCase):
 class ScheduledSetTest(unittest.TestCase):
 
     def setUp(self):
-        self.key = 'ss_test'
-        self.now = time.time()
+        self.key = 'scheduled_set_test'
+        self.now = time.time() - 1  # offset to avoid having to sleep
 
         self.ss = ScheduledSet(redis.Redis(), self.key)
 
@@ -381,10 +381,30 @@ class ScheduledSetTest(unittest.TestCase):
         self.ss.add(1, self.now)
         self.ss.add(2, self.now + 1000)
 
-        time.sleep(1)
         next_item = self.ss.pop()
         self.assertEquals(next_item, '1')
 
         next_item = self.ss.pop()
         self.assertEquals(next_item, None)
         self.assertEquals(len(self.ss), 1)
+
+    def test_peek(self):
+        with self.assertRaises(KeyError):
+            self.ss.peek()
+
+        self.ss.add(1, self.now)
+        self.ss.add(2, self.now + 1000)
+
+        self.assertEquals(
+            self.ss.peek(),
+            '1',
+        )
+
+        self.ss.pop()
+
+        with self.assertRaises(KeyError):
+            self.ss.peek()
+
+        self.assertEquals(len(self.ss), 1)
+
+

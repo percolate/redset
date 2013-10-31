@@ -9,7 +9,7 @@ import itertools
 
 import redis
 
-from redset import SortedSet
+from redset import SortedSet, ScheduledSet
 from redset.exceptions import LockTimeout
 
 client = redis.Redis()
@@ -85,6 +85,21 @@ class MultiprocessTest(unittest.TestCase):
         self.assertEquals(
             0,
             len(self.ss),
+        )
+
+
+class ScheduledMultiprocessTest(unittest.TestCase):
+    """
+    ScheduledSet has slightly different concurrency semantics.
+
+    """
+    def _make_ss(self):
+        class Serializer(object):
+            loads = int
+            dumps = str
+
+        return ScheduledSet(
+            redis.Redis(), self.set_name, serializer=Serializer(),
         )
 
 
