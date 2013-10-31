@@ -333,7 +333,7 @@ class ScheduledSet(TimeSortedSet):
     Implemented in terms of a redis ZSET where UNIX timestamps are used as
     the score.
 
-    A ScheduledSet will only return results with a score greater than
+    A ScheduledSet will only return results with a score less than
     time.time() - to enable you to schedule jobs for the future and let redis
     do the work of defering them until they are ready for consumption.
 
