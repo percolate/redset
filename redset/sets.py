@@ -233,6 +233,24 @@ class SortedSet(object):
 
         """
         res = []
+
+        item_strs = self._get_and_remove_items(num_items)
+
+        for item_str in item_strs:
+            try:
+                res.append(self._load_item(item_str))
+            except Exception:
+                log.exception("Could not deserialize '%s'" % res)
+
+        return res
+
+    def _get_and_remove_items(self, num_items):
+        """
+        get and remove items from the redis store.
+
+        :returns: [str, ...]
+
+        """
         pipe = self.redis.pipeline()
 
         (pipe
@@ -247,15 +265,7 @@ class SortedSet(object):
              num_items - 1)
          )
 
-        item_strs = pipe.execute()[0]
-
-        for item_str in item_strs:
-            try:
-                res.append(self._load_item(item_str))
-            except Exception:
-                log.exception("Could not deserialize '%s'" % res)
-
-        return res
+        return pipe.execute()[0]
 
     def _discard_by_str(self, *item_strs):
         """
@@ -338,16 +348,7 @@ class ScheduledSet(TimeSortedSet):
     do the work of defering them until they are ready for consumption.
 
     """
-    def _pop_items(self, num_items):
-        """
-        Internal method for poping items atomically from redis.
-
-        :returns: [loaded_item, ...]. if we can't deserialize a particular
-            item, just skip it.
-
-        """
-        res = []
-
+    def _get_and_remove_items(self, num_items):
         with self.lock:
             item_strs = self.redis.zrangebyscore(
                 self.name,
@@ -359,20 +360,9 @@ class ScheduledSet(TimeSortedSet):
             if item_strs:
                 self._discard_by_str(*item_strs)
 
-        for item_str in item_strs:
-            try:
-                res.append(self._load_item(item_str))
-            except Exception:
-                log.exception("Could not deserialize '%s'" % res)
-
-        return res
+        return item_strs
 
     def _get_next_item(self, with_score=False):
-        """
-        :returns: [str] or [str, float]. item optionally with score, without
-            removing it.
-
-        """
         return self.redis.zrangebyscore(
             self.name,
             '-inf',

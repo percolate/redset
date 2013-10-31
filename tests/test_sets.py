@@ -17,6 +17,10 @@ class SortedSetTest(unittest.TestCase):
     def tearDown(self):
         self.ss.clear()
 
+    def test_repr(self):
+        """Just make sure it doesn't blow up."""
+        str(self.ss)
+
     def test_length(self):
         for i in range(5):
             self.ss.add(i)
