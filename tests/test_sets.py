@@ -407,4 +407,3 @@ class ScheduledSetTest(unittest.TestCase):
 
         self.assertEquals(len(self.ss), 1)
 
-
