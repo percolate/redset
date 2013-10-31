@@ -31,20 +31,24 @@ Simple example
 
     ss.add({'foo': 'bar1'})
     ss.add({'foo': 'bar2'})
+     
+    ss.add({'foo': 'bar3'})
     ss.add({'foo': 'bar3'})
 
     len(ss)
     # 3
 
 
-    # ...some other process
-
+    # ...some other process A
 
     ss.peek()
     # {'foo': 'bar1'}
 
     ss.pop()
     # {'foo': 'bar1'}
+
+
+    # ...meanwhile in process B (at exactly same time as A's pop)
 
     ss.take(2)
     # [{'foo': 'bar2'}, {'foo': 'bar3'}]

@@ -40,8 +40,11 @@ Sets
 Specialized sets
 ----------------
 
-The only builtin concrete subclass of :class:`SortedSet <SortedSet>` is 
-:class:`TimeSortedSet`, which we've found to be the most common usecase.
+The only builtin concrete subclasses of :class:`SortedSet <SortedSet>` are
+sorted sets relating to time. One class maintains order based on time 
+(:class:`TimeSortedSet <TimeSortedSet>`) and the other does the same, but
+won't return items until their score is less than or equal to now 
+(:class:`ScheduledSet <ScheduledSet>`).
 
 
 .. autoclass:: TimeSortedSet
@@ -49,6 +52,19 @@ The only builtin concrete subclass of :class:`SortedSet <SortedSet>` is
    :members:
 
    .. automethod:: __init__
+ 
+ 
+This ScheduledSet allows you to schedule items to be processed strictly
+in the future, which allows you to easily implement backoffs for expensive
+tasks that can't be repeated continuously. 
+
+                   
+.. autoclass:: ScheduledSet
+   :show-inheritance:
+   :members:
+
+   .. automethod:: __init__
+   
    
 
 Interfaces

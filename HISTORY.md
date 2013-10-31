@@ -1,5 +1,9 @@
 # History
 
+## 0.3.2
+
+- Add `redis.ScheduledSet` for easy scheduled task processing
+
 ## 0.3.1
 
 - Use `redis.Redis.pipeline` for doing atomic set operations, batching multiple

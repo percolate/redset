@@ -11,6 +11,7 @@ log = logging.getLogger(__name__)
 __all__ = (
     'SortedSet',
     'TimeSortedSet',
+    'ScheduledSet',
 )
 
 
@@ -133,10 +134,7 @@ class SortedSet(object):
         :returns: object.
 
         """
-        with self.lock:
-            res = self._pop_item()
-
-        return res
+        return self._pop_item()
 
     def take(self, num):
         """
@@ -235,6 +233,24 @@ class SortedSet(object):
 
         """
         res = []
+
+        item_strs = self._get_and_remove_items(num_items)
+
+        for item_str in item_strs:
+            try:
+                res.append(self._load_item(item_str))
+            except Exception:
+                log.exception("Could not deserialize '%s'" % res)
+
+        return res
+
+    def _get_and_remove_items(self, num_items):
+        """
+        get and remove items from the redis store.
+
+        :returns: [str, ...]
+
+        """
         pipe = self.redis.pipeline()
 
         (pipe
@@ -249,27 +265,20 @@ class SortedSet(object):
              num_items - 1)
          )
 
-        item_strs = pipe.execute()[0]
+        return pipe.execute()[0]
 
-        for item_str in item_strs:
-            try:
-                res.append(self._load_item(item_str))
-            except Exception:
-                log.exception("Could not deserialize '%s'" % res)
-
-        return res
-
-    def _discard_by_str(self, item_str):
+    def _discard_by_str(self, *item_strs):
         """
         Internal discard to allow discarding by the str representation of
         an item.
 
         """
-        return self.redis.zrem(self.name, item_str)
+        return self.redis.zrem(self.name, *item_strs)
 
     def _get_next_item(self, with_score=False):
         """
-        :returns: [str] or [str, float]. item optionally with score
+        :returns: [str] or [str, float]. item optionally with score, without
+            removing it.
 
         """
         return self.redis.zrange(
@@ -323,6 +332,46 @@ class TimeSortedSet(SortedSet):
             kwargs['scorer'] = lambda i: time.time()
 
         super(TimeSortedSet, self).__init__(*args, **kwargs)
+
+
+class ScheduledSet(TimeSortedSet):
+    """
+    A distributed, FIFO-by-default, time-sorted set that's safe for
+    multiprocess consumption. Supports scheduling item consumption for the
+    future.
+
+    Implemented in terms of a redis ZSET where UNIX timestamps are used as
+    the score.
+
+    A ScheduledSet will only return results with a score less than
+    time.time() - to enable you to schedule jobs for the future and let redis
+    do the work of defering them until they are ready for consumption.
+
+    """
+    def _get_and_remove_items(self, num_items):
+        with self.lock:
+            item_strs = self.redis.zrangebyscore(
+                self.name,
+                '-inf',
+                time.time(),
+                withscores=False
+            )
+
+            if item_strs:
+                self._discard_by_str(*item_strs)
+
+        return item_strs
+
+    def _get_next_item(self, with_score=False):
+        return self.redis.zrangebyscore(
+            self.name,
+            '-inf',
+            time.time(),
+            # start/num combination is effectively a limit=1
+            start=0,
+            num=1,
+            withscores=with_score,
+        )
 
 
 class _DefaultSerializer(Serializer):
