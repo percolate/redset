@@ -381,7 +381,7 @@ class ScheduledSetTest(unittest.TestCase):
         self.ss.add(1, self.now)
         self.ss.add(2, self.now + 1000)
 
-        time.sleep(1)
+        time.sleep(2)
         next_item = self.ss.pop()
         self.assertEquals(next_item, '1')
 
