@@ -4,7 +4,7 @@ import time
 import json
 import redis
 
-from redset import SortedSet, TimeSortedSet
+from redset import SortedSet, TimeSortedSet, ScheduledSet
 from redset.interfaces import Serializer
 
 
@@ -355,3 +355,36 @@ class TimeSortedSetTest(unittest.TestCase):
             int(self.now - 1),
             int(self.tss.peek_score()),
         )
+
+
+class ScheduledSetTest(unittest.TestCase):
+
+    def setUp(self):
+        self.key = 'ss_test'
+        self.now = time.time()
+
+        self.ss = ScheduledSet(redis.Redis(), self.key)
+
+    def tearDown(self):
+        self.ss.clear()
+
+    def test_length(self):
+        for i in range(5):
+            self.ss.add(i)
+
+        self.assertEquals(
+            len(self.ss),
+            5,
+        )
+
+    def test_schedule(self):
+        self.ss.add(1, self.now)
+        self.ss.add(2, self.now + 1000)
+
+        time.sleep(1)
+        next_item = self.ss.pop()
+        self.assertEquals(next_item, '1')
+
+        next_item = self.ss.pop()
+        self.assertEquals(next_item, None)
+        self.assertEquals(len(self.ss), 1)
