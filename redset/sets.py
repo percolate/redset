@@ -325,6 +325,53 @@ class TimeSortedSet(SortedSet):
         super(TimeSortedSet, self).__init__(*args, **kwargs)
 
 
+class ScheduledSet(TimeSortedSet):
+    """
+    A distributed, FIFO-by-default, time-sorted set that's safe for
+    multiprocess consumption.
+
+    Implemented in terms of a redis ZSET where UNIX timestamps are used as
+    the score.
+
+    A ScheduledSet will only return results with a score greater than
+    time.time() - to enable you to schedule jobs for the future and let redis
+    do the work of defering them until they are ready for consumption.
+    """
+
+    def _pop_items(self, num_items):
+        """
+        Internal method for poping items atomically from redis.
+
+        :returns: [loaded_item, ...]. if we can't deserialize a particular
+            item, just skip it.
+
+        """
+        res = []
+        pipe = self.redis.pipeline()
+
+        (pipe
+         .zrangebyscore(
+             self.name,
+             time.time(),
+             '+inf',
+             withscores=False)
+         .zremrangebyrank(
+             self.name,
+             0,
+             num_items - 1)
+         )
+
+        item_strs = pipe.execute()[0]
+
+        for item_str in item_strs:
+            try:
+                res.append(self._load_item(item_str))
+            except Exception:
+                log.exception("Could not deserialize '%s'" % res)
+
+        return res
+
+
 class _DefaultSerializer(Serializer):
 
     loads = str
