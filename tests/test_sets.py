@@ -411,3 +411,11 @@ class ScheduledSetTest(unittest.TestCase):
 
         self.assertEquals(len(self.ss), 1)
 
+    def test_get_and_remove_items(self):
+        self.ss.add('1', self.now - 3)
+        self.ss.add('2', self.now - 2)
+        self.ss.add('3', self.now - 1)
+
+        items = self.ss.take(2)
+        self.assertEquals(len(items), 2)
+        self.assertEquals(['1', '2'], items)
