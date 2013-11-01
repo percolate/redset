@@ -359,7 +359,8 @@ class ScheduledSet(TimeSortedSet):
                 self.name,
                 '-inf',
                 time.time(),
-                limit=num_items,
+                start=0,
+                num=num_items,
                 withscores=False
             )
 
