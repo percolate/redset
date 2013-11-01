@@ -273,7 +273,12 @@ class SortedSet(object):
         an item.
 
         """
-        return self.redis.zrem(self.name, *item_strs)
+        pipe = self.redis.pipeline()
+
+        for item in item_strs:
+            pipe.zrem(self.name, item)
+
+        return all(pipe.execute())
 
     def _get_next_item(self, with_score=False):
         """
@@ -354,6 +359,8 @@ class ScheduledSet(TimeSortedSet):
                 self.name,
                 '-inf',
                 time.time(),
+                start=0,
+                num=num_items,
                 withscores=False
             )
 
