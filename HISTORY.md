@@ -3,6 +3,7 @@
 ## 0.3.3
 
 - ScheduledSet respects limit
+- Make removal compatible with versions of redis <2.4
 
 ## 0.3.2
 
