@@ -14,7 +14,7 @@ setup(
     description='Simple, distributed sorted sets with redis',
     long_description=open('README.rst').read(),
     tests_require=[
-        'redis'
+        'redis',
     ],
     classifiers=[
         'Intended Audience :: Developers',
