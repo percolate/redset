@@ -372,15 +372,6 @@ class ScheduledSetTest(unittest.TestCase):
     def tearDown(self):
         self.ss.clear()
 
-    def test_length(self):
-        for i in range(5):
-            self.ss.add(i)
-
-        self.assertEquals(
-            len(self.ss),
-            5,
-        )
-
     def test_schedule(self):
         self.ss.add(1, self.now)
         self.ss.add(2, self.now + 1000)
@@ -411,7 +402,7 @@ class ScheduledSetTest(unittest.TestCase):
 
         self.assertEquals(len(self.ss), 1)
 
-    def test_get_and_remove_items(self):
+    def test_take(self):
         self.ss.add('1', self.now - 3)
         self.ss.add('2', self.now - 2)
         self.ss.add('3', self.now - 1)
@@ -419,3 +410,84 @@ class ScheduledSetTest(unittest.TestCase):
         items = self.ss.take(2)
         self.assertEquals(len(items), 2)
         self.assertEquals(['1', '2'], items)
+
+        self.assertEquals(self.ss.pop(), '3')
+
+        self.assertEquals(
+            len(self.ss),
+            0,
+        )
+
+        self.assertEquals(
+            self.ss.take(0),
+            [],
+        )
+
+        self.assertEquals(
+            self.ss.take(-1),
+            [],
+        )
+
+    def test_length(self):
+        for i in range(2):
+            self.ss.add(i, self.now + 50)
+
+        for i in range(3):
+            self.ss.add(i + 2, self.now - 50)
+
+        self.assertEquals(
+            len(self.ss),
+            5,
+        )
+
+    def test_contains(self):
+        for i in range(5):
+            self.ss.add(i)
+
+        self.assertTrue(
+            0 in self.ss
+        )
+
+        self.assertFalse(
+            -1 in self.ss
+        )
+
+    def test_add_dup(self):
+        for i in range(5):
+            self.ss.add(i)
+
+        dup_added_at = 10
+        self.ss.add(0, score=dup_added_at)
+
+        self.assertEquals(
+            len(self.ss),
+            5,
+        )
+
+        self.assertEquals(
+            int(self.ss.score(0)),
+            int(dup_added_at),
+        )
+
+    def test_clear(self):
+        self.assertFalse(self.ss.clear())
+
+        for i in range(5):
+            self.ss.add(i)
+
+        self.assertTrue(self.ss.clear())
+        self.assertEquals(
+            len(self.ss),
+            0,
+        )
+
+    def test_discard(self):
+        self.ss.add(0)
+        self.ss.add(1, self.now + 50)
+
+        self.assertTrue(self.ss.discard(0))
+        self.assertFalse(self.ss.discard(0))
+
+        self.assertTrue(self.ss.discard(1))
+        self.assertFalse(self.ss.discard(1))
+
