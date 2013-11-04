@@ -13,7 +13,9 @@ setup(
     license='see LICENSE',
     description='Simple, distributed sorted sets with redis',
     long_description=open('README.rst').read(),
-    tests_require=['redis'],
+    tests_require=[
+        'redis',
+    ],
     classifiers=[
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
