@@ -51,6 +51,14 @@ class SortedSetTest(unittest.TestCase):
             [self.ss.pop() for __ in range(5)],
         )
 
+    def test_empty_pop(self):
+        with self.assertRaises(KeyError):
+            self.ss.pop()
+
+    def test_empty_peek(self):
+        with self.assertRaises(KeyError):
+            self.ss.peek()
+
     def test_add_dup(self):
         for i in range(5):
             self.ss.add(i)
@@ -388,8 +396,9 @@ class ScheduledSetTest(unittest.TestCase):
         next_item = self.ss.pop()
         self.assertEquals(next_item, '1')
 
-        next_item = self.ss.pop()
-        self.assertEquals(next_item, None)
+        with self.assertRaises(KeyError):
+            self.ss.pop()
+
         self.assertEquals(len(self.ss), 1)
 
     def test_peek(self):

@@ -1,5 +1,9 @@
 # History
 
+## 0.4
+
+- Reintroduce KeyError on empty pop()
+
 ## 0.3.3
 
 - ScheduledSet respects limit

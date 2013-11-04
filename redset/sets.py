@@ -134,7 +134,12 @@ class SortedSet(object):
         :returns: object.
 
         """
-        return self._pop_item()
+        item = self._pop_item()
+
+        if not item:
+            raise KeyError('%s is empty' % self)
+
+        return item
 
     def take(self, num):
         """
