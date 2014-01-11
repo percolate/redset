@@ -14,7 +14,7 @@ Features
 -  No worker daemons to run, no client processes to maintain
 -  Simple, easy-to-read implementation
 -  Mimics Python's native set interface
--  99% test coverage
+-  Battle-tested
 
 Simple example
 --------------
