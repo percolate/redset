@@ -4,8 +4,8 @@ redset
 |PyPI version| |build status| |Coverage Status|
 
 Simple, generic sorted sets backed by Redis that can be used to
-coordinate distributed systems. Unlike more common distribtion
-solutions like Celery or RQ, redset avoids duplicate work
+coordinate distributed systems. Unlike more common distribution
+libraries, e.g. Celery or RQ, redset avoids duplicate work
 for certain use-cases by maintaining a set of tasks instead of
 a list or queue.
 
