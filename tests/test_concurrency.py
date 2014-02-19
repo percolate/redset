@@ -149,4 +149,3 @@ class LockExpiryTest(unittest.TestCase):
                 got_the_lock = True
 
         assert got_the_lock, "`holder` should have acquired the lock"
-

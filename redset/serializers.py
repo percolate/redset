@@ -27,4 +27,3 @@ class NamedtupleSerializer(Serializer):
 
     def dumps(self, nt_instance):
         return json.dumps(nt_instance._asdict())
-

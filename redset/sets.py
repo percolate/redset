@@ -393,4 +393,3 @@ class _DefaultSerializer(Serializer):
 
 
 _default_scorer = lambda i: 0
-

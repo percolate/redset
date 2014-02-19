@@ -516,4 +516,3 @@ class ScheduledSetTest(unittest.TestCase):
 
         self.assertTrue(self.ss.discard(1))
         self.assertFalse(self.ss.discard(1))
-
