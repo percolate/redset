@@ -34,4 +34,3 @@ class TestNTSerializer(unittest.TestCase):
             dt,
             self.ss.pop(),
         )
-

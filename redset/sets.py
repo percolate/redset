@@ -100,8 +100,8 @@ class SortedSet(object):
 
     def add(self, item, score=None):
         """
-        Add the item to the set. It the item is already in the set, update
-        its score.
+        Add the item to the set. If the item is already in the set, update its
+        score.
 
         :param item:
         :type item: str
@@ -393,4 +393,3 @@ class _DefaultSerializer(Serializer):
 
 
 _default_scorer = lambda i: 0
-

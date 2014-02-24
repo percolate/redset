@@ -30,6 +30,23 @@ class SortedSetTest(unittest.TestCase):
             5,
         )
 
+    def test_add_with_score(self):
+        item = 'samere'
+        score = 123
+        self.ss.add(item, score)
+
+        assert self.ss.score(item) == score
+
+    def test_and_and_update_score(self):
+        item = 'samere'
+        score = 123
+        self.ss.add(item, score)
+
+        new_score = 456
+        self.ss.add(item, new_score)
+
+        assert self.ss.score(item) == new_score
+
     def test_contains(self):
         for i in range(5):
             self.ss.add(i)
@@ -499,4 +516,3 @@ class ScheduledSetTest(unittest.TestCase):
 
         self.assertTrue(self.ss.discard(1))
         self.assertFalse(self.ss.discard(1))
-
