@@ -178,15 +178,17 @@ class SortedSet(object):
         """
         return self._discard_by_str(self._dump_item(item))
 
-    def peek(self):
+    def peek(self, position=0):
         """
-        Return the next item eligible for processing without removing it.
+        Return the an item without removing it.
 
-        :raises: KeyError -- if no items left
+        :param position:
+        :type position: int
+        :raises: KeyError -- if no items found at the specified position
         :returns: object
 
         """
-        return self._load_item(self._peek_str())
+        return self._load_item(self._peek_str(position))
 
     def score(self, item):
         """
@@ -209,12 +211,12 @@ class SortedSet(object):
 
         return res[0][1] if res else None
 
-    def _peek_str(self):
+    def _peek_str(self, position=0):
         """
         Internal peek to allow peeking by str.
 
         """
-        results = self._get_next_item()
+        results = self._get_item(position)
 
         if not results:
             raise KeyError("%s is empty" % self.name)
@@ -285,18 +287,29 @@ class SortedSet(object):
 
         return all(pipe.execute())
 
+    def _get_item(self, position, with_score=False):
+        """
+        Returns a specific element from the redis store
+
+        :param position:
+        :type position: int
+        :returns: [str] or [str, float]. item optionally with score, without
+            removing it.
+        """
+        return self.redis.zrange(
+            self.name,
+            position,
+            position,
+            withscores=with_score,
+        )
+
     def _get_next_item(self, with_score=False):
         """
         :returns: [str] or [str, float]. item optionally with score, without
             removing it.
 
         """
-        return self.redis.zrange(
-            self.name,
-            0,
-            0,
-            withscores=with_score,
-        )
+        return self._get_item(0, with_score)
 
     def _load_item(self, item):
         """
@@ -374,16 +387,19 @@ class ScheduledSet(TimeSortedSet):
 
         return item_strs
 
-    def _get_next_item(self, with_score=False):
+    def _get_item(self, position=0, with_score=False):
         return self.redis.zrangebyscore(
             self.name,
             '-inf',
             time.time(),
             # start/num combination is effectively a limit=1
-            start=0,
-            num=1,
+            start=position,
+            num=position+1,
             withscores=with_score,
         )
+
+    def _get_next_item(self, with_score=False):
+        return self._get_item(with_score=with_score)
 
 
 class _DefaultSerializer(Serializer):
