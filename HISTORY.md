@@ -1,5 +1,9 @@
 # History
 
+## 0.4.2
+
+- Include `serializers` in top-level
+
 ## 0.4.1
 
 - Introduce `position` kwarg to peek() (by @ynsnyc)

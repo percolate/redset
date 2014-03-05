@@ -3,8 +3,7 @@ import unittest
 import redis
 from collections import namedtuple
 
-from redset import SortedSet
-from redset.serializers import NamedtupleSerializer
+from redset import SortedSet, serializers
 
 
 DiscoTask = namedtuple('DiscoTask', 'tiger,woods')
@@ -16,7 +15,7 @@ class TestNTSerializer(unittest.TestCase):
         self.ss = SortedSet(
             redis.Redis(),
             self.__class__.__name__,
-            serializer=NamedtupleSerializer(DiscoTask),
+            serializer=serializers.NamedtupleSerializer(DiscoTask),
         )
 
     def tearDown(self):
