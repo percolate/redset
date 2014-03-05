@@ -1,5 +1,9 @@
 # History
 
+## 0.4.1
+
+- Introduce `position` kwarg to peek() (by @ynsnyc)
+
 ## 0.4
 
 - Reintroduce KeyError on empty pop()
