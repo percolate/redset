@@ -123,6 +123,17 @@ class SortedSetTest(unittest.TestCase):
                 '0',
             )
 
+        with self.assertRaises(KeyError):
+            self.ss.peek(position=1)
+
+        self.ss.add(1)
+
+        for __ in range(2):
+            self.assertEquals(
+                self.ss.peek(position=1),
+                '1',
+            )
+
     def test_take(self):
         for i in range(5):
             self.ss.add(i)
@@ -351,6 +362,17 @@ class TimeSortedSetTest(unittest.TestCase):
                 '0',
             )
 
+        with self.assertRaises(KeyError):
+            self.tss.peek(position=1)
+
+        self.tss.add(1)
+
+        for __ in range(2):
+            self.assertEquals(
+                self.tss.peek(position=1),
+                '1',
+            )
+
     def test_score(self):
         self.assertEquals(
             None,
@@ -413,14 +435,24 @@ class ScheduledSetTest(unittest.TestCase):
         with self.assertRaises(KeyError):
             self.ss.peek()
 
-        self.ss.add(1, self.now)
-        self.ss.add(2, self.now + 1000)
+        self.ss.add(1, self.now - 1000)
+        self.ss.add(2, self.now)
+        self.ss.add(3, self.now + 1000)
 
         self.assertEquals(
             self.ss.peek(),
             '1',
         )
 
+        self.assertEquals(
+            self.ss.peek(position=1),
+            '2',
+        )
+
+        with self.assertRaises(KeyError):
+            self.ss.peek(position=2)
+
+        self.ss.pop()
         self.ss.pop()
 
         with self.assertRaises(KeyError):
