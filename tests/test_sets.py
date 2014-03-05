@@ -123,6 +123,17 @@ class SortedSetTest(unittest.TestCase):
                 '0',
             )
 
+        with self.assertRaises(KeyError):
+            self.ss.peek(1)
+
+        self.ss.add(1)
+
+        for __ in range(2):
+            self.assertEquals(
+                self.ss.peek(1),
+                '1',
+            )
+
     def test_take(self):
         for i in range(5):
             self.ss.add(i)
