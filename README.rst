@@ -29,9 +29,9 @@ Features
 -  Safe for multiple producers and consumers
 -  Seamless, simple use with Python objects using serializers
 -  Zero dependencies: you provide an object that implements the 
-   `redis.client.Redis` interface, we don't ask any questions.
+   ``redis.client.Redis`` interface, we don't ask any questions.
 -  Simple, easy-to-read implementation
--  Mimics Python's native `set` interface
+-  Mimics Python's native ``set`` interface
 -  Battle-tested
 -  Python 3 compatible
 
