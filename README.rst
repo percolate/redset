@@ -3,22 +3,37 @@ redset
 
 |PyPI version| |build status| |Coverage Status|
 
-Simple, generic sorted sets backed by Redis that can be used to
-coordinate distributed systems. Unlike more common distribution
-libraries, e.g. Celery or RQ, redset avoids duplicate work
-for certain use-cases by maintaining a set of tasks instead of
-a list or queue.
+You may not need heavyweights like Celery or RQ. Maintaing an AMQP server 
+might be overkill. There's a simpler, easier way to distribute work.
+
+Redset provides simple, generic sorted sets backed by Redis that can be used to
+coordinate distributed systems and parcel out work. Unlike more common
+distribution libraries like Celery or RQ, redset avoids duplicate work for
+certain use-cases by maintaining a set of tasks instead of a list or queue.
+And it does so with a dead-simple interface that feels natural for Python.
+
+Redset is currently used in the wild to do things like
+
+- maintain a high-throughput work queue of streaming updates to be processed
+- power a multi-producer, multi-consumer scraping architecture that won't do
+  the same work twice
+- maintain a simple, cross-process set of "seen" items that each have a 
+  TTL
+- schedule non-duplicate, periodic polling of analytics on social services
 
 
 Features
 --------
 
+-  No worker daemons to run, no heavy AMQP service to monitor
 -  Safe for multiple producers and consumers
--  Seamless use with Python objects using serializers
--  No worker daemons to run, no client processes to maintain
+-  Seamless, simple use with Python objects using serializers
+-  Zero dependencies: you provide an object that implements the 
+   `redis.client.Redis` interface, we don't ask any questions.
 -  Simple, easy-to-read implementation
--  Mimics Python's native set interface
+-  Mimics Python's native `set` interface
 -  Battle-tested
+-  Python 3 compatible
 
 Simple example
 --------------
