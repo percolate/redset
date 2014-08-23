@@ -152,10 +152,7 @@ class SortedSet(object):
         :returns: list of objects
 
         """
-        try:
-            num = int(num)
-        except:
-            raise ValueError("num must be int-like")
+        num = int(num)
 
         if num < 1:
             return []
