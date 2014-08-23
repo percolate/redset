@@ -1,5 +1,9 @@
 # History
 
+## 0.5
+
+- Make compatible with Python 3
+
 ## 0.4.1
 
 - Introduce `position` kwarg to peek() (by @ynsnyc)
