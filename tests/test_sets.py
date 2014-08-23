@@ -548,3 +548,24 @@ class ScheduledSetTest(unittest.TestCase):
 
         self.assertTrue(self.ss.discard(1))
         self.assertFalse(self.ss.discard(1))
+
+    def test_peek_score(self):
+        self.assertEquals(
+            None,
+            self.ss.peek_score(),
+        )
+
+        for i in range(3):
+            self.ss.add(i, self.now - i)
+
+        self.assertEquals(
+            int(self.now - 2),
+            int(self.ss.peek_score()),
+        )
+
+        self.ss.pop()
+
+        self.assertEquals(
+            int(self.now - 1),
+            int(self.ss.peek_score()),
+        )

@@ -7,6 +7,6 @@ Simple redis-backed, distributed sorted sets.
 
 """
 
-__version__ = '0.4.1'
+__version__ = '0.5'
 
 from redset.sets import *

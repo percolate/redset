@@ -152,6 +152,8 @@ class SortedSet(object):
         :returns: list of objects
 
         """
+        num = int(num)
+
         if num < 1:
             return []
 
@@ -244,6 +246,7 @@ class SortedSet(object):
         item_strs = self._get_and_remove_items(num_items)
 
         for item_str in item_strs:
+            item_str = _py3_compat_decode(item_str)
             try:
                 res.append(self._load_item(item_str))
             except Exception:
@@ -319,7 +322,7 @@ class SortedSet(object):
         try:
             self.serializer.loads
         except AttributeError:
-            return item
+            return _py3_compat_decode(item)
 
         return self.serializer.loads(item)
 
@@ -404,8 +407,15 @@ class ScheduledSet(TimeSortedSet):
 
 class _DefaultSerializer(Serializer):
 
-    loads = str
+    loads = lambda self, i: _py3_compat_decode(i)
     dumps = lambda self, i: i
 
 
 _default_scorer = lambda i: 0
+
+
+def _py3_compat_decode(item_out_of_redis):
+    """Py3 redis returns bytes, so we must handle the decode."""
+    if not isinstance(item_out_of_redis, str):
+        return item_out_of_redis.decode('utf-8')
+    return item_out_of_redis

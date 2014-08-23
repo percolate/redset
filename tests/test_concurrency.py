@@ -63,14 +63,14 @@ class MultiprocessTest(unittest.TestCase):
 
             pipe = [multiprocessing.Pipe() for x in X]
             proc = [multiprocessing.Process(target=spawn(f), args=(c, x))
-                    for x, (p, c) in itertools.izip(X, pipe)]
+                    for x, (p, c) in zip(X, pipe)]
             [p.start() for p in proc]
             [p.join() for p in proc]
             return [p.recv() for (p, c) in pipe]
 
         def take_subset(process_num):
             ss = self._make_ss()
-            return ss.take(num_items / num_procs)
+            return ss.take(int(num_items / num_procs))
 
         taken_items = list(itertools.chain.from_iterable(
             parmap(take_subset, range(num_procs))))
@@ -79,7 +79,7 @@ class MultiprocessTest(unittest.TestCase):
         # concurrently
         self.assertEquals(
             list(sorted(taken_items)),
-            range(num_items),
+            list(range(num_items)),
         )
 
         self.assertEquals(
