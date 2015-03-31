@@ -498,6 +498,18 @@ class ScheduledSetTest(unittest.TestCase):
             5,
         )
 
+    def test_length_available(self):
+        for i in range(2):
+            self.ss.add(i, self.now + 50)
+
+        for i in range(3):
+            self.ss.add(i + 2, self.now - 50)
+
+        self.assertEquals(
+            self.ss.available(),
+            3,
+        )
+
     def test_contains(self):
         for i in range(5):
             self.ss.add(i)

@@ -404,6 +404,13 @@ class ScheduledSet(TimeSortedSet):
     def _get_next_item(self, with_score=False):
         return self._get_item(with_score=with_score)
 
+    def available(self):
+        """
+        The count of items with a score less than now.
+
+        """
+        return self.redis.zcount(self.name, '-inf', time.time())
+
 
 class _DefaultSerializer(Serializer):
 
