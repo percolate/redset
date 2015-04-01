@@ -1,5 +1,9 @@
 # History
 
+## 0.5.1
+
+- Add `available` method on ScheduledSet
+
 ## 0.5
 
 - Make compatible with Python 3
@@ -54,4 +58,3 @@
 
 - Removed used of `mockredispy` because of its inconsistency with how redis
   actually behaves.
-
